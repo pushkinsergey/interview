@@ -1,3 +1,5 @@
+from datetime import datetime
+from datetime import timedelta
 from django.http import Http404
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -31,7 +33,10 @@ class PollList(APIView):
     #permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
-        poll = Poll.objects.all()
+        current_date = datetime.now()
+        poll = Poll.objects.filter(start_date__lte=current_date).filter(
+            end_date__gte=current_date)
+        #poll = Poll.objects.all()
         serializer = PollSerializer(poll, many=True)
         return Response(serializer.data)
 
@@ -67,9 +72,16 @@ class PollEdit(APIView):
 
 class QuestionList(APIView):
     def get(self, request, pk,  format=None):
-        #p1 = Poll.objects.get(pk=1)
-        #q1 = Question(poll=p1, text_question="Второй вопрос", type_question=1)
-        #q1.save()
+        #p1 = Poll.objects.get(pk=5)
+        #q1 = Question(poll=p1, text_question="Третий вопрос", type_question=2)
+        # q1.save()
+        #o1 = Option(question=q1, options='выбор 1')
+        # o1.save()
+        #o2 = Option(question=q1, options='выбор 2')
+        # o2.save()
+        #o3 = Option(question=q1, options='выбор 3')
+        # o3.save()
+
         question = Question.objects.filter(poll=pk)
         serializer = QuestionSerializer(question, many=True)
         return Response(serializer.data)
@@ -80,6 +92,18 @@ class QuestionList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Interviews(APIView):
+    def get(self, request, format=None):
+        #u=User.objects.get(pk=1)
+        #p=Poll.objects.get(pk=5)
+        #i=Interview(interviewee=u,poll=p)
+        #i.save()
+        #interview = Interview.objects.filter(interviewee=user)
+        interview = Interview.objects.filter(interviewee__id=1)
+        serializer = InterviewSerializer(interview, many=True)
+        return Response(serializer.data)
 
 
 class CustomAuthToken(ObtainAuthToken):

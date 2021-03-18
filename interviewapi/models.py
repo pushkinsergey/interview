@@ -1,4 +1,3 @@
-import jwt
 from datetime import datetime
 from datetime import timedelta
 from django.db import models
@@ -11,7 +10,6 @@ from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 
 
-
 class Poll(models.Model):
     title = models.CharField(max_length=200, blank=True, default='')
     start_date = models.DateTimeField(auto_now_add=True)
@@ -20,17 +18,25 @@ class Poll(models.Model):
 
 
 class Question(models.Model):
-    poll = models.ForeignKey('Poll', on_delete=models.CASCADE)
+    poll = models.ForeignKey(
+        'Poll', related_name='question', on_delete=models.CASCADE)
     text_question = models.TextField()
     type_question = models.SmallIntegerField(choices=(
         (1, "ответ текстом"),
         (2, "ответ с выбором одного варианта"),
         (3, "ответ с выбором нескольких вариантов")), default=1)
 
+    def __str__(self):
+        return self.text_question
+
 
 class Option(models.Model):
-    question = models.ForeignKey('Question', on_delete=models.CASCADE)
+    question = models.ForeignKey(
+        'Question', related_name='option', on_delete=models.CASCADE)
     options = models.TextField(default='')
+
+    def __str__(self):
+        return self.options
 
 
 class Interview(models.Model):

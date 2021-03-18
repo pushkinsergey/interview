@@ -9,22 +9,29 @@ from interviewapi.models import AnswerText
 from interviewapi.models import AnswerOption
 
 
-class PollSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Poll
-        fields = ('id', 'title', 'start_date', 'end_date', 'description')
-
-
 class QuestionSerializer(serializers.ModelSerializer):
+    option = serializers.StringRelatedField(many=True)
+
     class Meta:
         model = Question
-        fields = ('id', 'poll', 'text_question', 'type_question')
+        fields = ('id', 'poll', 'text_question', 'type_question', 'option')
 
 
 class OptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Option
         fields = ('id', 'question', 'options')
+
+class PollSerializer(serializers.ModelSerializer):
+    #question = serializers.StringRelatedField(many=True)
+    question = QuestionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Poll
+        fields = ('id', 'title', 'start_date',
+                  'end_date', 'description', 'question')
+        read_only_fields = ['start_date']
+
 
 
 class InterviewSerializer(serializers.ModelSerializer):
@@ -52,9 +59,9 @@ class AnswerOptionSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    #interview = serializers.PrimaryKeyRelatedField(
+    # interview = serializers.PrimaryKeyRelatedField(
     #    many=True, queryset=Interview.objects.all())
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email')
+        fields = ('id', 'username', 'emailtit')
