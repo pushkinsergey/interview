@@ -39,3 +39,13 @@ http -v DELETE http://127.0.0.1:8000/api/poll/6/
 
 редактирование опроса
 http -v PUT http://127.0.0.1:8000/api/poll/5/
+
+прохождение опроса
+получение вопросов
+http -v GET http://127.0.0.1:8000/api/poll/2/question/   
+
+получение пройденных пользователем опросов с детализацией по ответам
+http -v GET http://127.0.0.1:8000/api/interview/4/
+
+получение токена (авторизация)
+http POST http://127.0.0.1:8000/api-token-auth/  username=admin password=...

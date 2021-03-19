@@ -22,6 +22,7 @@ class OptionSerializer(serializers.ModelSerializer):
         model = Option
         fields = ('id', 'question', 'options')
 
+
 class PollSerializer(serializers.ModelSerializer):
     #question = serializers.StringRelatedField(many=True)
     question = QuestionSerializer(many=True, read_only=True)
@@ -33,17 +34,10 @@ class PollSerializer(serializers.ModelSerializer):
         read_only_fields = ['start_date']
 
 
-
 class InterviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Interview
         fields = ('id', 'interviewee', 'poll')
-
-
-class AnswerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Answer
-        fields = ('id', 'interview', 'question')
 
 
 class AnswerTextSerializer(serializers.ModelSerializer):
@@ -56,6 +50,27 @@ class AnswerOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnswerOption
         fields = ('id', 'answer', 'option_answer')
+
+
+class AnswerSerializer(serializers.ModelSerializer):
+    answeroption = AnswerOptionSerializer(many=True, read_only=True)
+    answertext = AnswerTextSerializer()
+    question_full_info = QuestionSerializer(read_only=True)
+
+    class Meta:
+        model = Answer
+        fields = ('id', 'interview', 'question',
+                  'answertext', 'answeroption', 'question_full_info')
+
+    def create(self, validated_data):
+        answer = Answer.objects.create(**validated_data)
+        answeroption_data = validated_data.pop('answeroption')
+        for option in answeroption_data:
+            AnswerOption.objects.create(answer=answer, **option)
+        answertext_data = validated_data.pop('answertext')
+        for text in answertext_data:
+            AnswerText.objects.create(answer=answer, **text)
+        return answer
 
 
 class UserSerializer(serializers.ModelSerializer):

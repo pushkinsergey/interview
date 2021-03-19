@@ -1,3 +1,4 @@
+import random
 from datetime import datetime
 from datetime import timedelta
 from django.http import Http404
@@ -72,15 +73,19 @@ class PollEdit(APIView):
 
 class QuestionList(APIView):
     def get(self, request, pk,  format=None):
-        #p1 = Poll.objects.get(pk=5)
-        #q1 = Question(poll=p1, text_question="Третий вопрос", type_question=2)
-        # q1.save()
-        #o1 = Option(question=q1, options='выбор 1')
-        # o1.save()
-        #o2 = Option(question=q1, options='выбор 2')
-        # o2.save()
-        #o3 = Option(question=q1, options='выбор 3')
-        # o3.save()
+        #p1 = Poll.objects.get(pk=2)
+        #Question.objects.filter(poll=p1).delete()
+        #Question.objects.all().delete()
+        #for i in range(1,10):
+        #    type_question = int(round(random.random()*2+1))
+        #    text_question='Вопрос номер %i'%i
+        #    qi = Question(poll=p1, text_question=text_question, type_question=type_question)
+        #    qi.save()
+        #    if type_question>1:
+        #        for j in range(2,int(round(random.random()*2+3))):
+        #            oj = Option(question=qi, options='выбор %i'%j)
+        #            oj.save()
+
 
         question = Question.objects.filter(poll=pk)
         serializer = QuestionSerializer(question, many=True)
@@ -97,13 +102,33 @@ class QuestionList(APIView):
 class Interviews(APIView):
     def get(self, request, format=None):
         #u=User.objects.get(pk=1)
-        #p=Poll.objects.get(pk=5)
+        #p=Poll.objects.get(pk=2)
         #i=Interview(interviewee=u,poll=p)
         #i.save()
         #interview = Interview.objects.filter(interviewee=user)
         interview = Interview.objects.filter(interviewee__id=1)
         serializer = InterviewSerializer(interview, many=True)
         return Response(serializer.data)
+
+class Interviewing(APIView):
+    def get(self, request, pk, format=None):
+        interview = Interview.objects.get(pk=pk)
+        #question = Question.objects.filter(poll=interview.poll)
+        #for q in question:
+        #    a = Answer(question=q, interview=interview)
+        #    a.save()
+        #    if q.type_question==1:
+        #        at = AnswerText(answer=a, text_answer='Ответ на вопрос '+q.text_question)   
+        #        at.save()                 
+        #    else:
+        #        ao = AnswerOption(answer=a, option_answer=Option.objects.filter(question=q)[1])
+        #        ao.save()
+        answer = Answer.objects.filter(interview=interview)
+        serializer = AnswerSerializer(answer, many=True)
+        return Response(serializer.data)
+    def post(self, request, pk, format=None):
+        pass
+
 
 
 class CustomAuthToken(ObtainAuthToken):
@@ -115,6 +140,4 @@ class CustomAuthToken(ObtainAuthToken):
         token, created = Token.objects.get_or_create(user=user)
         return Response({
             'token': token.key,
-            'user_id': user.pk,
-            'email': user.email
-        })
+        }) #'user_id': user.pk,'email': user.email

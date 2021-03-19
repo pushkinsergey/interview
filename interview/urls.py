@@ -27,7 +27,8 @@ urlpatterns = [
     url(r'^api/list/$', views.PollList.as_view()),
     url(r'^api/poll/(?P<pk>[0-9]+)/$', views.PollEdit.as_view()),
     url(r'^api/poll/(?P<pk>[0-9]+)/question/$', views.QuestionList.as_view()),    
-    url(r'^api/interview/$', views.Interviews.as_view()),    
+    url(r'^api/interview/$', views.Interviews.as_view()), 
+    url(r'^api/interview/(?P<pk>[0-9]+)/$', views.Interviewing.as_view()),    
     url(r'^api-token-auth/', views.CustomAuthToken.as_view())
 ]
 

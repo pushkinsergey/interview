@@ -1,3 +1,4 @@
+https://www.django-rest-framework.org/api-guide/relations/
 https://github.com/ibrikin/django-rest-framework-rusdoc/blob/master/docs/tutorial/1-serialization.md
 -----------------------------------------------
 <Token: 6a2b77187ce0d21389fc3118ed1ca850d2d3fa53 >, False)
