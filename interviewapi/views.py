@@ -99,6 +99,22 @@ class QuestionList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class QuestionEdit(APIView):
+    def put(self, request, pk, format=None):
+        question = Question.objects.get(pk=pk)
+        if question:
+            serializer = QuestionSerializer(poll, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        question = Question.objects.get(pk=pk)
+        question.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class Interviews(APIView):
     def get(self, request, format=None):
         #u=User.objects.get(pk=1)

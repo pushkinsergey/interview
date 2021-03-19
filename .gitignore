@@ -2,3 +2,4 @@
 *.md
 *.bat
 *.sqlite3
+*.pyc
